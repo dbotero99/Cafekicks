@@ -3,27 +3,54 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CafeKicks — Sneakers, Tech & Streetwear</title>
+  <title>Cafe Kicks — Sneakers, Tech & Streetwear</title>
   <meta name="description" content="Fresh sneakers, tech parts, and streetwear. Ships fast from Houston, TX."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
   <header>
-    <div class="logo">CAFE<span>KICKS</span></div>
+    <div class="logo">CAFE KICKS</div>
     <nav>
       <a href="index.html" class="active">Shop</a>
       <a href="admin.html">Admin</a>
     </nav>
   </header>
 
+  <!-- HERO -->
   <section class="hero">
+
+    <!-- Floating coffee drop particles -->
+    <div class="drop drop1"></div>
+    <div class="drop drop2"></div>
+    <div class="drop drop3"></div>
+    <div class="drop drop4"></div>
+    <div class="drop drop5"></div>
+    <div class="drop drop6"></div>
+    <div class="drop drop7"></div>
+
+    <!-- Steam wisps above logo -->
+    <div class="steam-group">
+      <div class="wisp"></div>
+      <div class="wisp"></div>
+      <div class="wisp"></div>
+    </div>
+
+    <!-- Your actual logo -->
+    <div class="hero-logo-wrap">
+      <img src="logo.png" alt="Cafe Kicks logo" class="hero-logo"/>
+    </div>
+
+    <!-- Hero text -->
     <div class="hero-inner">
-      <div class="hero-tag">Houston, TX 📦 Ships Fast</div>
-      <h1>CAFE<span>KICKS</span></h1>
-      <p>Sneakers · Tech · Streetwear<br/>Authenticated. Tested. Ready to ship.</p>
+      <div class="hero-eyebrow">Houston, TX &nbsp;·&nbsp; Est. 2024</div>
+      <div class="hero-sub">Premium sneakers · Tested tech · Streetwear<br/>Every item hand-picked. Ships fast.</div>
+      <div class="hero-ctas">
+        <button class="cta-primary" onclick="document.querySelector('.shop').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+        <button class="cta-secondary" onclick="document.querySelector('.shop').scrollIntoView({behavior:'smooth'})">View All Listings</button>
+      </div>
       <div class="hero-stats" id="hero-stats">
         <div class="hs"><span id="stat-listed">—</span><small>In Stock</small></div>
         <div class="hs"><span id="stat-sold">—</span><small>Sold</small></div>
@@ -32,10 +59,31 @@
     </div>
   </section>
 
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee">
+      <div class="marquee-item"><div class="mdot"></div>NIKE</div>
+      <div class="marquee-item"><div class="mdot"></div>AIR JORDAN</div>
+      <div class="marquee-item"><div class="mdot"></div>ADIDAS</div>
+      <div class="marquee-item"><div class="mdot"></div>NEW BALANCE</div>
+      <div class="marquee-item"><div class="mdot"></div>YEEZY</div>
+      <div class="marquee-item"><div class="mdot"></div>ELECTRONICS</div>
+      <div class="marquee-item"><div class="mdot"></div>FREE SHIPPING OVER $75</div>
+      <div class="marquee-item"><div class="mdot"></div>NIKE</div>
+      <div class="marquee-item"><div class="mdot"></div>AIR JORDAN</div>
+      <div class="marquee-item"><div class="mdot"></div>ADIDAS</div>
+      <div class="marquee-item"><div class="mdot"></div>NEW BALANCE</div>
+      <div class="marquee-item"><div class="mdot"></div>YEEZY</div>
+      <div class="marquee-item"><div class="mdot"></div>ELECTRONICS</div>
+      <div class="marquee-item"><div class="mdot"></div>FREE SHIPPING OVER $75</div>
+    </div>
+  </div>
+
+  <!-- SHOP -->
   <section class="shop">
     <div class="shop-toolbar">
       <input class="search" id="search" type="text" placeholder="Search listings…" oninput="applyFilters()"/>
-      <div class="pills" id="pills">
+      <div class="pills">
         <button class="pill active" onclick="setCategory('all',this)">All</button>
         <button class="pill" onclick="setCategory('Nike',this)">Nike</button>
         <button class="pill" onclick="setCategory('Jordan',this)">Jordan</button>
@@ -44,15 +92,48 @@
         <button class="pill" onclick="setCategory('Clothing',this)">Clothing</button>
       </div>
     </div>
+
+    <!-- Category cards -->
+    <div class="cat-row">
+      <div class="cat-card" onclick="setCategory('Nike',document.querySelector('.pill:nth-child(2)'));document.querySelector('.shop-toolbar').scrollIntoView()">
+        <div class="cat-icon">👟</div><div class="cat-name">Sneakers</div>
+      </div>
+      <div class="cat-card" onclick="setCategory('Electronics',document.querySelector('.pill:nth-child(5)'))">
+        <div class="cat-icon">💾</div><div class="cat-name">Tech</div>
+      </div>
+      <div class="cat-card" onclick="setCategory('Clothing',document.querySelector('.pill:nth-child(6)'))">
+        <div class="cat-icon">👕</div><div class="cat-name">Streetwear</div>
+      </div>
+      <div class="cat-card" onclick="setCategory('all',document.querySelector('.pill:nth-child(1)'))">
+        <div class="cat-icon">🧢</div><div class="cat-name">All Items</div>
+      </div>
+    </div>
+
+    <div class="sec-head">
+      <div class="sec-title">Fresh Listings</div>
+    </div>
+
     <div class="grid" id="grid">
       <div class="loading">Loading listings…</div>
     </div>
   </section>
 
+  <!-- TRUST BAR -->
+  <div class="trust-bar">
+    <div class="trust-item"><div class="trust-icon">🚚</div><div class="trust-text"><strong>Fast Shipping</strong><span>Same or next day · Houston TX</span></div></div>
+    <div class="trust-item"><div class="trust-icon">✅</div><div class="trust-text"><strong>Verified Items</strong><span>Tested or inspected every time</span></div></div>
+    <div class="trust-item"><div class="trust-icon">💬</div><div class="trust-text"><strong>Real Support</strong><span>DM us anytime, real responses</span></div></div>
+  </div>
+
   <footer>
-    <div class="logo" style="font-size:20px">CAFE<span>KICKS</span></div>
-    <p>Houston, TX &nbsp;·&nbsp; Fast shipping &nbsp;·&nbsp; DM for questions</p>
-    <p style="margin-top:8px;font-size:11px;color:#555">© 2025 CafeKicks</p>
+    <div class="logo" style="font-size:22px;margin-bottom:8px">CAFE KICKS</div>
+    <div class="footer-links">
+      <a href="#">Shop</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+      <a href="#">eBay Store</a>
+    </div>
+    <p style="margin-top:12px;font-size:11px;color:#a89060">© 2025 Cafe Kicks · Houston, TX</p>
   </footer>
 
   <!-- Item Modal -->
@@ -87,14 +168,14 @@
     }
 
     function updateStats() {
-      document.getElementById('stat-listed', ).textContent = allItems.filter(i => i.status === 'listed').length;
+      document.getElementById('stat-listed').textContent = allItems.filter(i => i.status === 'listed').length;
       document.getElementById('stat-sold').textContent = allItems.filter(i => i.status === 'sold').length;
     }
 
     function setCategory(cat, btn) {
       activeCategory = cat;
       document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
+      if (btn) btn.classList.add('active');
       applyFilters();
     }
 
@@ -117,7 +198,7 @@
             <div class="card-sub">${i.size || ''}</div>
             <div class="card-footer">
               <div class="card-price">$${i.ask}</div>
-              <button class="card-btn" ${i.status === 'sold' ? 'disabled' : ''} onclick="event.stopPropagation();openModal(${i.id})">
+              <button class="card-btn" ${i.status === 'sold' ? 'disabled' : ''}>
                 ${i.status === 'sold' ? 'Sold' : 'View'}
               </button>
             </div>
