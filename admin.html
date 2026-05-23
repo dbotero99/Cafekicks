@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CafeKicks — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="admin.css"/>
+</head>
+<body class="admin-body">
+
+  <header>
+    <div class="logo">CAFE<span>KICKS</span> <span class="admin-tag">Admin</span></div>
+    <nav>
+      <a href="index.html">← Storefront</a>
+      <button class="btn btn-primary btn-sm" onclick="showTab('add')">+ Add Item</button>
+    </nav>
+  </header>
+
+  <main class="admin-main">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('dashboard')">Dashboard</button>
+      <button class="tab" onclick="showTab('inventory')">Inventory <span class="badge" id="inv-badge">0</span></button>
+      <button class="tab" onclick="showTab('add')">+ Add Item</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="tab-page active" id="tab-dashboard">
+      <div class="metrics" id="metrics"></div>
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-title">Recent Activity</div>
+          <div id="activity"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">By Platform</div>
+          <div id="plat-breakdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div class="tab-page" id="tab-inventory">
+      <div class="toolbar">
+        <div class="pills">
+          <button class="pill active" onclick="setFilter('all',this)">All</button>
+          <button class="pill" onclick="setFilter('listed',this)">Listed</button>
+          <button class="pill" onclick="setFilter('draft',this)">Draft</button>
+          <button class="pill" onclick="setFilter('sold',this)">Sold</button>
+        </div>
+      </div>
+      <div class="inv-grid" id="inv-grid"></div>
+    </div>
+
+    <!-- ADD ITEM -->
+    <div class="tab-page" id="tab-add">
+      <div class="panel" style="max-width:660px">
+        <div class="panel-title">New Listing</div>
+        <div class="form-grid">
+          <div class="fg full">
+            <label>Item Name *</label>
+            <input id="f-name" type="text" placeholder="e.g. Nike Air Jordan 1 Retro High OG" oninput="checkGenBtn()"/>
+          </div>
+          <div class="fg">
+            <label>Category</label>
+            <select id="f-brand">
+              <option value="">Select</option>
+              <option>Nike</option><option>Jordan</option><option>Adidas</option>
+              <option>New Balance</option><option>Yeezy</option>
+              <option>Electronics</option><option>Clothing</option><option>Other</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Size / Condition / Spec</label>
+            <input id="f-size" type="text" placeholder="e.g. US 10 / DS  or  DDR4-3200 / Tested"/>
+          </div>
+          <div class="fg">
+            <label>Cost Paid ($)</label>
+            <input id="f-cost" type="number" placeholder="0.00" min="0" step="0.01" oninput="calcProfit()"/>
+          </div>
+          <div class="fg">
+            <label>Asking Price ($)</label>
+            <input id="f-ask" type="number" placeholder="0.00" min="0" step="0.01" oninput="calcProfit()"/>
+          </div>
+          <div class="fg full">
+            <label>Platforms</label>
+            <div class="plats" id="plats">
+              <button type="button" class="pb" onclick="togPlat(this,'eBay')">eBay</button>
+              <button type="button" class="pb" onclick="togPlat(this,'FB Marketplace')">FB Marketplace</button>
+              <button type="button" class="pb" onclick="togPlat(this,'Cafekicks Site')">Cafekicks Site</button>
+              <button type="button" class="pb" onclick="togPlat(this,'Depop')">Depop</button>
+              <button type="button" class="pb" onclick="togPlat(this,'Mercari')">Mercari</button>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Status</label>
+            <select id="f-status">
+              <option value="listed">Listed (public)</option>
+              <option value="draft">Draft (hidden)</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Icon</label>
+            <select id="f-emoji">
+              <option value="👟">👟 Sneaker</option>
+              <option value="👠">👠 Heel</option>
+              <option value="🥾">🥾 Boot</option>
+              <option value="👕">👕 Shirt</option>
+              <option value="👖">👖 Pants</option>
+              <option value="🧢">🧢 Hat</option>
+              <option value="🧥">🧥 Jacket</option>
+              <option value="💾">💾 RAM / Tech</option>
+              <option value="💻">💻 Laptop Part</option>
+              <option value="📦">📦 Other</option>
+            </select>
+          </div>
+          <div class="full">
+            <div class="profit-preview">
+              <div>
+                <div class="pp-label">Estimated profit after ~13% fees</div>
+              </div>
+              <div class="pp-val" id="pval">$0</div>
+            </div>
+          </div>
+          <div class="full">
+            <button class="gen-btn" id="gen-btn" type="button" onclick="genDesc()" disabled>
+              ✨ Generate eBay Description with AI
+            </button>
+            <textarea id="f-desc" rows="4" placeholder="Item description (auto-generated or write your own)…"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="addItem()" style="flex:1">Save Listing</button>
+          <button class="btn btn-ghost" onclick="clearForm()">Clear</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

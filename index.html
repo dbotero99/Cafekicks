@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CafeKicks — Sneakers, Tech & Streetwear</title>
+  <meta name="description" content="Fresh sneakers, tech parts, and streetwear. Ships fast from Houston, TX."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <header>
+    <div class="logo">CAFE<span>KICKS</span></div>
+    <nav>
+      <a href="index.html" class="active">Shop</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-tag">Houston, TX 📦 Ships Fast</div>
+      <h1>CAFE<span>KICKS</span></h1>
+      <p>Sneakers · Tech · Streetwear<br/>Authenticated. Tested. Ready to ship.</p>
+      <div class="hero-stats" id="hero-stats">
+        <div class="hs"><span id="stat-listed">—</span><small>In Stock</small></div>
+        <div class="hs"><span id="stat-sold">—</span><small>Sold</small></div>
+        <div class="hs"><span>⭐ 5.0</span><small>Rating</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="shop">
+    <div class="shop-toolbar">
+      <input class="search" id="search" type="text" placeholder="Search listings…" oninput="applyFilters()"/>
+      <div class="pills" id="pills">
+        <button class="pill active" onclick="setCategory('all',this)">All</button>
+        <button class="pill" onclick="setCategory('Nike',this)">Nike</button>
+        <button class="pill" onclick="setCategory('Jordan',this)">Jordan</button>
+        <button class="pill" onclick="setCategory('Adidas',this)">Adidas</button>
+        <button class="pill" onclick="setCategory('Electronics',this)">Tech</button>
+        <button class="pill" onclick="setCategory('Clothing',this)">Clothing</button>
+      </div>
+    </div>
+    <div class="grid" id="grid">
+      <div class="loading">Loading listings…</div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="logo" style="font-size:20px">CAFE<span>KICKS</span></div>
+    <p>Houston, TX &nbsp;·&nbsp; Fast shipping &nbsp;·&nbsp; DM for questions</p>
+    <p style="margin-top:8px;font-size:11px;color:#555">© 2025 CafeKicks</p>
+  </footer>
+
+  <!-- Item Modal -->
+  <div class="modal-bg" id="modal-bg" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-emoji" id="m-emoji"></div>
+      <div class="modal-body">
+        <div class="modal-status" id="m-status"></div>
+        <h2 id="m-name"></h2>
+        <div class="modal-sub" id="m-sub"></div>
+        <div class="modal-price" id="m-price"></div>
+        <div class="modal-desc" id="m-desc"></div>
+        <div class="modal-plats" id="m-plats"></div>
+        <button class="buy-btn" id="m-buy" onclick="contactSeller()">Contact Seller</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script>
+    let allItems = [];
+    let activeCategory = 'all';
+
+    async function loadItems() {
+      const { data, error } = await db.from('inventory').select('*').order('created_at', { ascending: false });
+      if (error) { document.getElementById('grid').innerHTML = '<div class="loading">Could not load listings.</div>'; return; }
+      allItems = data || [];
+      updateStats();
+      applyFilters();
+    }
+
+    function updateStats() {
+      document.getElementById('stat-listed', ).textContent = allItems.filter(i => i.status === 'listed').length;
+      document.getElementById('stat-sold').textContent = allItems.filter(i => i.status === 'sold').length;
+    }
+
+    function setCategory(cat, btn) {
+      activeCategory = cat;
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('search').value.toLowerCase();
+      let items = allItems.filter(i => i.status !== 'draft');
+      if (activeCategory !== 'all') items = items.filter(i => i.brand === activeCategory);
+      if (q) items = items.filter(i => i.name.toLowerCase().includes(q) || (i.size||'').toLowerCase().includes(q));
+      renderGrid(items);
+    }
+
+    function renderGrid(items) {
+      const grid = document.getElementById('grid');
+      if (!items.length) { grid.innerHTML = '<div class="loading">No listings found.</div>'; return; }
+      grid.innerHTML = items.map(i => `
+        <div class="card ${i.status === 'sold' ? 'sold' : ''}" onclick="openModal(${i.id})">
+          <div class="card-img">${i.emoji || '👟'}${i.status === 'sold' ? '<div class="sold-badge">SOLD</div>' : ''}</div>
+          <div class="card-body">
+            <div class="card-name">${i.name}</div>
+            <div class="card-sub">${i.size || ''}</div>
+            <div class="card-footer">
+              <div class="card-price">$${i.ask}</div>
+              <button class="card-btn" ${i.status === 'sold' ? 'disabled' : ''} onclick="event.stopPropagation();openModal(${i.id})">
+                ${i.status === 'sold' ? 'Sold' : 'View'}
+              </button>
+            </div>
+          </div>
+        </div>`).join('');
+    }
+
+    function openModal(id) {
+      const i = allItems.find(x => x.id === id);
+      if (!i) return;
+      document.getElementById('m-emoji').textContent = i.emoji || '👟';
+      document.getElementById('m-name').textContent = i.name;
+      document.getElementById('m-sub').textContent = i.size || '';
+      document.getElementById('m-price').textContent = '$' + i.ask;
+      document.getElementById('m-desc').textContent = i.description || '';
+      document.getElementById('m-status').textContent = i.status.toUpperCase();
+      document.getElementById('m-status').className = 'modal-status s-' + i.status;
+      document.getElementById('m-plats').textContent = i.platforms ? 'Also on: ' + i.platforms.join(', ') : '';
+      const btn = document.getElementById('m-buy');
+      btn.textContent = i.status === 'sold' ? 'Sold Out' : 'Contact Seller';
+      btn.disabled = i.status === 'sold';
+      document.getElementById('modal-bg').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modal-bg').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function contactSeller() {
+      alert('DM @cafekicks on Instagram or message on eBay to purchase!');
+    }
+
+    loadItems();
+  </script>
+</body>
+</html>
